@@ -9,13 +9,12 @@ from typing import Optional
 import typer
 
 from .maze import BFSMazeGenerator, CarveStrategy, MazeChecker, MazeVisualizer
+from.rnn import app as rnn_app
 
 app = typer.Typer(help="Generate and visualise BFS mazes.", add_completion=False)
 
+app.add_typer(rnn_app.app, name="rnn", help="Train an RNN to generate mazes.")
 
-@app.callback()
-def main() -> None:
-    """Maze generation toolkit."""
 
 
 @app.command()
@@ -50,6 +49,8 @@ def generate(
         typer.echo(f"[{i + 1}/{count}] proper maze saved to {path}")
 
     typer.secho(f"Done. {count} maze(s) written to {output_dir}/", fg=typer.colors.GREEN)
+
+
 
 
 if __name__ == "__main__":
