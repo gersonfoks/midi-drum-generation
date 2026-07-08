@@ -26,9 +26,8 @@ class TrainConfig(BaseModel):
     maze_size: int = 11
     carve_strategy: CarveStrategy = CarveStrategy.random
     num_train_samples: int = 5000
-
     # Model
-    cell_type: CellType = "rnn"
+    cell_type: Literal["rnn", "lstm", "gru"] = "rnn"
     embedding_dim: int = 64
     hidden_size: int = 128
     n_layers: int = 5
