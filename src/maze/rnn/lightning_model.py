@@ -62,6 +62,8 @@ class LightningRnnModel(pl.LightningModule):
         """
         was_training = self.training
         self.eval()
+        if temperature <= 0:
+            raise ValueError(f"temperature must be > 0, got {temperature}")
         input_token = torch.full((count, 1), BOS_TOKEN, dtype=torch.long, device=self.device)
         hidden = None
         tokens: list[Tensor] = []
