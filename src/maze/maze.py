@@ -257,9 +257,31 @@ class MazeVisualizer:
         MazeCell.end: "#e74c3c",
     }
 
+    #: Fixed cell ordering, so a cell always maps to the same colour index.
+    _ORDER: tuple[MazeCell, ...] = (
+        MazeCell.wall,
+        MazeCell.path,
+        MazeCell.start,
+        MazeCell.end,
+    )
+
     def __init__(self, cell_size: float = 0.3):
         #: Size of one cell in inches; controls the output resolution.
         self.cell_size = cell_size
+
+    def draw(self, maze: Maze, ax) -> None:
+        """Paint ``maze`` onto the given matplotlib ``Axes`` (no file I/O).
+
+        Shared by :meth:`visualize` and callers that tile many mazes into one
+        figure (e.g. the training sample callback), so colours stay consistent.
+        """
+        from matplotlib.colors import ListedColormap
+
+        index = {cell: i for i, cell in enumerate(self._ORDER)}
+        raster = [[index[cell] for cell in row] for row in maze.grid]
+        cmap = ListedColormap([self._COLORS[cell] for cell in self._ORDER])
+        ax.imshow(raster, cmap=cmap, vmin=0, vmax=len(self._ORDER) - 1)
+        ax.set_axis_off()
 
     def visualize(self, maze: Maze, save_path: str | Path) -> Path:
         """Render ``maze`` to ``save_path`` (PNG) and return the written path."""
@@ -267,12 +289,6 @@ class MazeVisualizer:
 
         matplotlib.use("Agg")  # headless backend, no display required
         import matplotlib.pyplot as plt
-        from matplotlib.colors import ListedColormap
-
-        order = [MazeCell.wall, MazeCell.path, MazeCell.start, MazeCell.end]
-        index = {cell: i for i, cell in enumerate(order)}
-        raster = [[index[cell] for cell in row] for row in maze.grid]
-        cmap = ListedColormap([self._COLORS[cell] for cell in order])
 
         save_path = Path(save_path)
         save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -280,8 +296,7 @@ class MazeVisualizer:
         fig, ax = plt.subplots(
             figsize=(maze.width * self.cell_size, maze.height * self.cell_size)
         )
-        ax.imshow(raster, cmap=cmap, vmin=0, vmax=len(order) - 1)
-        ax.set_axis_off()
+        self.draw(maze, ax)
         fig.savefig(save_path, bbox_inches="tight", pad_inches=0.05, dpi=100)
         plt.close(fig)
         return save_path

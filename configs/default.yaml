@@ -1,0 +1,29 @@
+# Default training config for the maze-generation RNN.
+# Any key may be omitted; missing keys fall back to TrainConfig defaults.
+
+# Data
+maze_size: 15            # odd number >= 3; grid is maze_size x maze_size
+carve_strategy: random   # random (Prim's) or bfs
+num_train_samples: 15000
+
+# Model
+cell_type: lstm           # rnn | lstm | gru
+embedding_dim: 64
+hidden_size: 128
+n_layers: 5
+
+# Optimisation
+learning_rate: 0.001
+batch_size: 64
+max_epochs: 100
+
+# Runtime
+seed: 0
+accelerator: auto        # auto | cpu | gpu
+num_workers: 0
+
+# Sampling / logging
+sample_temperature: 1.0  # > 0 so the per-epoch samples differ
+num_vis_samples: 16      # grids drawn to the TensorBoard image grid each epoch
+num_valid_samples: 64    # grids sampled for the val_valid_fraction metric
+log_dir: lightning_logs  # TensorBoard log directory

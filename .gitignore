@@ -10,3 +10,7 @@ wheels/
 .venv
 
 mazes/
+
+# Training artifacts
+lightning_logs/
+optuna_studies/
