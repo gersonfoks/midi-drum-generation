@@ -9,7 +9,7 @@ from typing import Optional
 import typer
 
 from .maze import BFSMazeGenerator, CarveStrategy, MazeChecker, MazeVisualizer
-from.rnn import app as rnn_app
+from .rnn import app as rnn_app
 
 app = typer.Typer(help="Generate and visualise BFS mazes.", add_completion=False)
 
