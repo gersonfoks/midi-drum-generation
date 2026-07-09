@@ -10,3 +10,18 @@ wheels/
 .venv
 
 mazes/
+
+# Auto-downloaded SoundFonts (fetched on first use; not committed)
+assets/soundfonts/*
+!assets/soundfonts/README.md
+# Local audio comparison samples
+audio_samples/
+
+# RNN training outputs (generated, not committed)
+lightning_logs/
+optuna_studies/
+artifacts/
+
+data/
+
+assets/

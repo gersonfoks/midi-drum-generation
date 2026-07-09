@@ -1,0 +1,44 @@
+# Default training config for the drum-groove RNN.
+# Any key may be omitted; missing keys fall back to TrainConfig defaults.
+
+# Data
+data_root: data/raw/groove
+max_seq_len: 1024        # clips whose token sequence exceeds this are dropped
+vocab_size: 1000         # BPE target vocab (only used when use_bpe: true)
+use_bpe: true
+tokenizer_path: artifacts/midi_tokenizer.json  # trained tokenizer is cached here
+limit_per_split: null    # cap clips per split (null = whole dataset)
+
+# Model
+cell_type: lstm          # rnn | lstm | gru
+embedding_dim: 64
+genre_embedding_dim: 16  # embedding for the 18 genres (primary beat type)
+fill_embedding_dim: 8    # embedding for beat-vs-fill
+hidden_size: 256
+n_layers: 5
+dropout: 0.1
+residual: True          # skip connection around each RNN layer (helps deep stacks)
+
+# Optimisation
+learning_rate: 0.001
+batch_size: 32
+max_epochs: 200
+grad_clip: 1.0           # clip gradients to this global L2 norm (0 disables)
+
+# Runtime
+seed: 0
+accelerator: auto        # auto | cpu | gpu
+num_workers: 0
+
+# Sampling / logging
+sample_temperature: 1.0  # > 0 so per-epoch samples differ
+num_samples: 8           # sequences sampled for the val_mean_gen_length metric
+log_dir: lightning_logs  # TensorBoard log directory
+log_name: midi_rnn       # TensorBoard run name (lightning_logs/midi_rnn/)
+
+# Audio samples (synthesise generated grooves so you can listen to them)
+log_audio: true            # log audio to TensorBoard's Audio tab + write .wav files
+audio_every_n_epochs: 5    # synthesise every N validation epochs (fluidsynth is slow)
+audio_gen_length: 512      # tokens generated per audio sample
+audio_sample_rate: 44100   # WAV / TensorBoard audio sample rate
+audio_temperature: 1.0     # sampling temperature for audio grooves
